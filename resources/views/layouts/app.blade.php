@@ -39,6 +39,9 @@
                                 <x-nav-link :href="route('world-quests.index')" :active="request()->routeIs('world-quests.*')">
                                     {{ __('World Quests') }}
                                 </x-nav-link>
+                                <x-nav-link :href="route('quest-progress.index')" :active="request()->routeIs('quest-progress.*')">
+                                    {{ __('Quest Progress') }}
+                                </x-nav-link>
                             </div>
                         </div>
 
@@ -98,6 +101,9 @@
                         </x-responsive-nav-link>
                         <x-responsive-nav-link :href="route('world-quests.index')" :active="request()->routeIs('world-quests.*')">
                             {{ __('World Quests') }}
+                        </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('quest-progress.index')" :active="request()->routeIs('quest-progress.*')">
+                            {{ __('Quest Progress') }}
                         </x-responsive-nav-link>
                     </div>
 
