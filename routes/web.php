@@ -39,4 +39,12 @@ Route::get('/regions/{region}', [App\Http\Controllers\RegionController::class, '
 Route::get('/world-quests', [App\Http\Controllers\WorldQuestController::class, 'index'])->name('world-quests.index');
 Route::get('/world-quests/{worldQuest}', [App\Http\Controllers\WorldQuestController::class, 'show'])->name('world-quests.show');
 
+// Quest Progress routes
+Route::middleware('auth')->group(function () {
+    Route::get('/quest-progress', [App\Http\Controllers\QuestProgressController::class, 'index'])->name('quest-progress.index');
+    Route::post('/quest-progress/{worldQuest}', [App\Http\Controllers\QuestProgressController::class, 'store'])->name('quest-progress.store');
+    Route::put('/quest-progress/{userQuest}', [App\Http\Controllers\QuestProgressController::class, 'update'])->name('quest-progress.update');
+    Route::delete('/quest-progress/{userQuest}', [App\Http\Controllers\QuestProgressController::class, 'destroy'])->name('quest-progress.destroy');
+});
+
 require __DIR__.'/auth.php';
