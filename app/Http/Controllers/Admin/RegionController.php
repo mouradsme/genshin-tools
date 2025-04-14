@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Region;
+use App\Models\WorldQuest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -84,5 +85,52 @@ class RegionController extends Controller
     {
         $region->load('worldQuests');
         return view('admin.regions.show', compact('region'));
+    }
+
+    public function importQuests(Request $request, Region $region)
+    {
+        $request->validate([
+            'quests_file' => 'required|file|mimes:json|max:2048'
+        ]);
+
+        try {
+            $jsonContent = file_get_contents($request->file('quests_file')->path());
+            $quests = json_decode($jsonContent, true);
+
+            if (!is_array($quests)) {
+                return back()->with('error', 'Invalid JSON format. Expected an array of quests.');
+            }
+
+            $imported = 0;
+            $skipped = 0;
+
+            foreach ($quests as $questData) {
+                // Validate quest data structure
+                if (!isset($questData['name']) || !isset($questData['link'])) {
+                    continue;
+                }
+
+                // Check for existing quest with the same name
+                $exists = WorldQuest::where('name', $questData['name'])
+                    ->where('region_id', $region->id)
+                    ->exists();
+
+                if (!$exists) {
+                    WorldQuest::create([
+                        'name' => $questData['name'],
+                        'description' => $questData['description'] ?? $questData['name'], // Use name as description if not provided
+                        'guide_link' => $questData['link'],
+                        'region_id' => $region->id
+                    ]);
+                    $imported++;
+                } else {
+                    $skipped++;
+                }
+            }
+
+            return back()->with('success', "Successfully imported {$imported} quests. {$skipped} quests skipped (duplicates).");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error processing the JSON file: ' . $e->getMessage());
+        }
     }
 } 

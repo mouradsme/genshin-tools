@@ -25,6 +25,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Regions
     Route::resource('regions', App\Http\Controllers\Admin\RegionController::class);
+    Route::post('/regions/{region}/import-quests', [App\Http\Controllers\Admin\RegionController::class, 'importQuests'])->name('regions.import-quests');
     
     // World Quests
     Route::resource('world-quests', App\Http\Controllers\Admin\WorldQuestController::class);
@@ -42,6 +43,8 @@ Route::get('/world-quests/{worldQuest}', [App\Http\Controllers\WorldQuestControl
 // Quest Progress routes
 Route::middleware('auth')->group(function () {
     Route::get('/quest-progress', [App\Http\Controllers\QuestProgressController::class, 'index'])->name('quest-progress.index');
+    Route::put('/quest-progress/batch-update', [App\Http\Controllers\QuestProgressController::class, 'batchUpdate'])->name('quest-progress.batch-update');
+    Route::post('/quest-progress/batch-store', [App\Http\Controllers\QuestProgressController::class, 'batchStore'])->name('quest-progress.batch-store');
     Route::post('/quest-progress/{worldQuest}', [App\Http\Controllers\QuestProgressController::class, 'store'])->name('quest-progress.store');
     Route::put('/quest-progress/{userQuest}', [App\Http\Controllers\QuestProgressController::class, 'update'])->name('quest-progress.update');
     Route::delete('/quest-progress/{userQuest}', [App\Http\Controllers\QuestProgressController::class, 'destroy'])->name('quest-progress.destroy');

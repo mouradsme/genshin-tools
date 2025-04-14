@@ -15,7 +15,9 @@ class RegionController extends Controller
 
     public function show(Region $region)
     {
-        $region->load('worldQuests');
+        $region->load(['worldQuests.userQuests' => function($query) {
+            $query->where('user_id', auth()->id());
+        }]);
         return view('regions.show', compact('region'));
     }
 } 
